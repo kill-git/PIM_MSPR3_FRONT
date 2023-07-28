@@ -36,7 +36,7 @@
                             </div>
     
                             <div class="row justify-content-center my-3 px-3">
-                                <button class="btn-block btn-color" onclick="redirectToHomePage()">Login to DailyPim</button>
+                                <button type="submit" class="btn-block btn-color" onclick="login()">Login to DailyPim</button>
                             </div>
     
                             <div class="row justify-content-center my-2">
@@ -89,3 +89,42 @@
     </div>
 </body>
 </html>
+
+<script>
+    function login(){
+        var username = document.getElementById("email").value;
+        var password = document.getElementById("psw").value;
+        console.log(`username: ` + username + ` password: ` + password)
+
+     fetch('https://localhost:7244/signIn', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        nomUtilisateur: username,
+        MotDePasse: password,
+      }),
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Erreur lors de la connexion");
+        }
+      })
+      .then(data => {
+        console.log(data);
+        const authToken = data.Token;
+        console.log(authToken)
+        // Stocker le token 
+        localStorage.setItem('authToken', authToken);
+
+        window.location.href = 'index.html';
+
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    }
+</script>
